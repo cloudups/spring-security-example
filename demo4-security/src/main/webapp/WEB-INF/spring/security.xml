@@ -1,0 +1,32 @@
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:b="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+	<http pattern="/login.jsp" security="none" />
+
+	<http use-expressions="true">
+
+		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+		
+		<!-- 自定义登录界面 -->
+		<form-login 
+			authentication-failure-url="/login.jsp"
+			login-page="/login.jsp" 
+			default-target-url="/index.jsp"
+			login-processing-url="/j_spring_security_check" />
+			
+		<csrf disabled="true" />
+	</http>
+
+	<!-- 2、更改验证信息加载方式 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="mUserDetailsService">
+		</authentication-provider>
+	</authentication-manager>
+
+	<!-- 1、配置自定义类MUserDetailsService -->
+	<b:bean id="mUserDetailsService" class="com.sfq.MUserDetailsService" />
+
+</b:beans>
