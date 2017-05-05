@@ -1,0 +1,38 @@
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:b="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http pattern="/login.jsp" security="none" />
+
+	<http use-expressions="true" auto-config="true">
+		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+
+		<!-- 自定义登录界面 -->
+		<form-login authentication-failure-url="/login.jsp"
+			login-page="/login.jsp" default-target-url="/index.jsp"
+			login-processing-url="/j_spring_security_check" />
+
+		<!-- 登出配置 -->
+		<logout logout-url="/j_spring_security_logout"
+			logout-success-url="/login.jsp" />
+
+		<csrf disabled="true" />
+	</http>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider>
+			<!-- 2、引用自定义加密器 -->
+			<password-encoder ref="mPasswordEncoder" />
+
+			<user-service>
+				<user name="admin" password="password"
+					authorities="ROLE_USER" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+	
+	<!-- 1、加载自定义加密器 -->
+	<b:bean id="mPasswordEncoder" class="com.sfq.MPasswordEncoder"></b:bean>
+	
+</b:beans>
